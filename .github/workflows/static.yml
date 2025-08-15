@@ -27,6 +27,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      UV_CACHE_DIR: /tmp/.uv-cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +42,6 @@ jobs:
       - run: uv run main.py
         env:
           APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
-      - run: uv cache prune --ci
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
