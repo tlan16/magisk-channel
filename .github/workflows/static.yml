@@ -27,18 +27,12 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    env:
-      UV_CACHE_DIR: /tmp/.uv-cache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-      - uses: actions/cache@v4
-        with:
-          path: /tmp/.uv-cache
-          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock') }}
       - run: uv run main.py
         env:
           APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
