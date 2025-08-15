@@ -14,8 +14,8 @@ repo = 'Magisk'
 
 session = curl_cffi.AsyncSession()
 env_file_path = Path(__file__).parent / '.env'
-assert env_file_path.is_file()
-load_dotenv(env_file_path)
+if env_file_path.is_file():
+    load_dotenv(env_file_path)
 github_token = os.getenv("APP_GITHUB_TOKEN", os.getenv("GITHUB_TOKEN"))
 assert github_token, "Unable to find github token in environment variables."
 
