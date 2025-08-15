@@ -32,6 +32,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv run main.py
+        env:
+          APP_GITHUB_TOKEN: ${{ secrets.APP_GITHUB_TOKEN }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
