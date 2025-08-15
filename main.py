@@ -105,6 +105,7 @@ async def download_note(response: "ReleaseResponse") -> str:
                 f.write(chunk)
     return url
 
+
 class ReleaseResponse(BaseModel):
     tag_name: str = Field(min_length=1, max_length=10, examples=["v29.0"])
     assets: list["ReleaseResponseAsset"] = Field(min_length=1)
