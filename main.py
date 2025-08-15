@@ -24,17 +24,18 @@ if dist_path.exists():
     shutil.rmtree(dist_path)
 dist_path.mkdir(parents=False, exist_ok=False)
 
+http_headers = {
+    **HeaderGenerator().generate(),
+    "Accept": "application/vnd.github+json",
+    "User-Agent": "",
+    "Authorization": f"Bearer {github_token}",
+    "X-GitHub-Api-Version": "2022-11-28"
+}
+
 async def get_last_release():
-    headers = {
-        **HeaderGenerator().generate(),
-        "Accept": "application/vnd.github+json",
-        "User-Agent": "",
-        "Authorization": f"Bearer {github_token}",
-        "X-GitHub-Api-Version": "2022-11-28"
-    }
     response = await session.get(
         f"https://api.github.com/repos/{owner}/{repo}/releases/latest",
-        headers=headers
+        headers=http_headers,
     )
     assert response.status_code == 200, f"Failed to fetch releases: {response.status_code}. {response.text}"
     response = ReleaseResponse.model_validate(response.json())
@@ -81,7 +82,7 @@ async def download_apk(response: "ReleaseResponse") -> str:
     if file_path.exists():
         file_path.unlink()
     print("Downloading APK from:", url)
-    apk_response = await session.get(url, stream=True)
+    apk_response = await session.get(url, stream=True, headers=http_headers)
     with open(file_path, 'wb') as f:
         async for chunk in apk_response.aiter_content(chunk_size=1024):
             if chunk:
@@ -97,7 +98,7 @@ async def download_note(response: "ReleaseResponse") -> str:
     if file_path.exists():
         file_path.unlink()
     print("Downloading Note from:", url)
-    note_response = await session.get(url, stream=True)
+    note_response = await session.get(url, stream=True, headers=http_headers)
     with open(file_path, 'wb') as f:
         async for chunk in note_response.aiter_content(chunk_size=1024):
             if chunk:
